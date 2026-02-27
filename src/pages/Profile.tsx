@@ -316,23 +316,21 @@ export default function Profile() {
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Appearance</h3>
           </div>
-          <div className="p-3">
-            <div className="grid grid-cols-3 gap-2">
-              {([
-                { value: "light" as const, icon: Sun, label: "Light" },
-                { value: "dark" as const, icon: Moon, label: "Dark" },
-                { value: "system" as const, icon: Monitor, label: "System" },
-              ]).map(({ value, icon: Icon, label }) => (
-                <button key={value} onClick={() => setTheme(value)}
-                  className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-all ${
-                    theme === value
-                      ? "border-[#1A6FDB] bg-[#1A6FDB]/10 text-[#1A6FDB]"
-                      : "border-border text-muted-foreground hover:bg-secondary/30"}`}>
-                  <Icon className="h-4 w-4" />
-                  <span className="text-[11px] font-medium">{label}</span>
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center justify-center gap-6 py-3">
+            {([
+              { value: "light" as const, icon: Sun, label: "Light" },
+              { value: "dark" as const, icon: Moon, label: "Dark" },
+              { value: "system" as const, icon: Monitor, label: "System" },
+            ]).map(({ value, icon: Icon, label }) => (
+              <button key={value} onClick={() => setTheme(value)}
+                className={`flex flex-col items-center gap-1 transition-colors ${
+                  theme === value
+                    ? "text-[#1A6FDB]"
+                    : "text-muted-foreground hover:text-foreground"}`}>
+                <Icon className="h-5 w-5" />
+                <span className="text-[10px] font-medium">{label}</span>
+              </button>
+            ))}
           </div>
         </motion.div>
 
@@ -347,10 +345,10 @@ export default function Profile() {
               onClick={() => setShowSignOutConfirm(true)}
               className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-card border border-border hover:bg-secondary/30 transition-colors text-left"
             >
-              <div className="h-8 w-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
-                <LogOut className="h-3.5 w-3.5 text-red-500" />
+              <div className="h-8 w-8 rounded-full bg-[#1A6FDB]/10 flex items-center justify-center shrink-0">
+                <LogOut className="h-3.5 w-3.5 text-[#1A6FDB]" />
               </div>
-              <p className="text-sm font-medium text-red-500">Sign Out</p>
+              <p className="text-sm font-medium text-[#1A6FDB]">Sign Out</p>
             </button>
           ) : (
             <div className="rounded-xl bg-card border border-border overflow-hidden">
@@ -364,7 +362,7 @@ export default function Profile() {
                   Cancel
                 </button>
                 <button onClick={handleSignOut}
-                  className="py-3 text-sm font-semibold text-red-500 hover:bg-red-500/5 transition-colors">
+                  className="py-3 text-sm font-semibold text-[#1A6FDB] hover:bg-[#1A6FDB]/5 transition-colors">
                   Sign Out
                 </button>
               </div>
