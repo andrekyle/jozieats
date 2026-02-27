@@ -31,6 +31,7 @@ import {
   Shield,
   Store,
   Truck,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -339,6 +340,8 @@ export default function Profile() {
               onClick={() => toast({ title: "Contact Support", description: "Email support@jozieats.co.za or call 011 555 0123" })} />
             <MenuRow icon={RotateCcw} title="Refund Policy" subtitle="Returns and refund info" chevron
               onClick={() => navigate("/refund-policy")} />
+            <MenuRow icon={Info} title="About Jozi Eats" subtitle="What this app can do" chevron
+              onClick={() => navigate("/about")} />
           </div>
         </motion.div>
 
