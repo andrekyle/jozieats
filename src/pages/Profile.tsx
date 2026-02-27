@@ -25,6 +25,10 @@ import {
   Edit2,
   Save,
   Loader2,
+  Shield,
+  HelpCircle,
+  FileText,
+  Banknote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +46,7 @@ export default function Profile() {
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [phone, setPhone] = useState(profile?.phone || "");
   const [address, setAddress] = useState("");
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
   // Fetch orders summary
   const { data: orders = [] } = useQuery({
@@ -97,46 +102,47 @@ export default function Profile() {
 
   const recentOrders = orders.slice(0, 5);
 
-  return (
-    <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <div className="sticky top-0 z-30 glass px-4 py-3 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full h-9 w-9"
-          onClick={() => navigate("/")}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-lg font-semibold tracking-wide">My Profile</h1>
-      </div>
+  const initials = profile?.full_name
+    ? profile.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "JE";
 
-      <div className="px-4 mt-4 space-y-6">
-        {/* Avatar & Name */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-4"
-        >
-          <div className="h-16 w-16 rounded-full bg-[#1A6FDB] flex items-center justify-center text-white text-xl font-bold shrink-0">
-            {profile?.full_name
-              ? profile.full_name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()
-                  .slice(0, 2)
-              : "JE"}
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Header */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A6FDB] via-[#1560C0] to-[#0D3F80]" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50" />
+
+        <div className="relative safe-top px-4 pt-4 pb-8">
+          {/* Nav */}
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={() => navigate("/")}
+              className="h-9 w-9 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+            >
+              <ArrowLeft className="h-4.5 w-4.5" />
+            </button>
+            <h1 className="text-base font-semibold tracking-wide text-white/90">
+              Account
+            </h1>
+            <div className="w-9" />
           </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold tracking-wide truncate">
+
+          {/* Profile Info */}
+          <div className="flex flex-col items-center text-center">
+            <div className="h-20 w-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center text-white text-2xl font-bold mb-3 shadow-lg">
+              {initials}
+            </div>
+            <h2 className="text-xl font-bold text-white tracking-wide">
               {profile?.full_name || "Jozi Eater"}
             </h2>
-            <p className="text-sm text-muted-foreground truncate">
-              {user?.email}
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-white/70 mt-0.5">{user?.email}</p>
+            <p className="text-xs text-white/50 mt-1">
               Member since{" "}
               {user?.created_at
                 ? new Date(user.created_at).toLocaleDateString("en-ZA", {
@@ -146,49 +152,53 @@ export default function Profile() {
                 : "—"}
             </p>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="grid grid-cols-3 gap-3"
-        >
-          <div className="bg-card rounded-lg border border-border p-3 text-center">
-            <p className="text-xl font-bold text-[#1A6FDB]">{totalOrders}</p>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
-              Orders
-            </p>
-          </div>
-          <div className="bg-card rounded-lg border border-border p-3 text-center">
-            <p className="text-xl font-bold text-green-500">{deliveredOrders}</p>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
-              Delivered
-            </p>
-          </div>
-          <div className="bg-card rounded-lg border border-border p-3 text-center">
-            <p className="text-xl font-bold">R{totalSpent.toFixed(0)}</p>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
-              Total Spent
-            </p>
-          </div>
-        </motion.div>
+        {/* Stats Row - overlapping the hero */}
+        <div className="relative px-4 -mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="grid grid-cols-3 gap-2 bg-card rounded-xl border border-border p-1 shadow-lg"
+          >
+            <div className="p-3 text-center">
+              <p className="text-xl font-bold text-[#1A6FDB]">{totalOrders}</p>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
+                Orders
+              </p>
+            </div>
+            <div className="p-3 text-center border-x border-border">
+              <p className="text-xl font-bold text-emerald-500">{deliveredOrders}</p>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
+                Delivered
+              </p>
+            </div>
+            <div className="p-3 text-center">
+              <p className="text-xl font-bold">R{totalSpent.toFixed(0)}</p>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
+                Spent
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="px-4 pt-14 pb-12 space-y-4">
 
         {/* Contact Details */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-card rounded-lg border border-border p-4"
+          className="bg-card rounded-xl border border-border overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold tracking-wide text-sm uppercase">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <h3 className="font-semibold tracking-wide text-xs uppercase text-muted-foreground">
               Contact Details
             </h3>
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => {
                 if (editing) {
                   handleSaveProfile();
@@ -198,124 +208,123 @@ export default function Profile() {
                   setEditing(true);
                 }
               }}
-              className="h-8 text-xs gap-1.5 text-[#1A6FDB]"
+              className="text-xs font-medium text-[#1A6FDB] flex items-center gap-1 hover:text-[#1560C0] transition-colors"
             >
               {saving ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3 w-3 animate-spin" />
               ) : editing ? (
                 <>
-                  <Save className="h-3.5 w-3.5" /> Save
+                  <Save className="h-3 w-3" /> Save
                 </>
               ) : (
                 <>
-                  <Edit2 className="h-3.5 w-3.5" /> Edit
+                  <Edit2 className="h-3 w-3" /> Edit
                 </>
               )}
-            </Button>
+            </button>
           </div>
 
-          <div className="space-y-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <User className="h-3 w-3" /> Full Name
-              </Label>
-              {editing ? (
-                <Input
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="h-10 rounded-lg bg-secondary/50 border-border text-sm"
-                />
-              ) : (
-                <p className="text-sm font-medium">
-                  {profile?.full_name || "—"}
-                </p>
-              )}
+          <div className="divide-y divide-border">
+            <div className="flex items-center gap-3 px-4 py-3">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <User className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Name</p>
+                {editing ? (
+                  <Input
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="h-8 mt-0.5 rounded-lg bg-secondary/50 border-border text-sm px-2"
+                  />
+                ) : (
+                  <p className="text-sm font-medium truncate">{profile?.full_name || "—"}</p>
+                )}
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <Mail className="h-3 w-3" /> Email
-              </Label>
-              <p className="text-sm font-medium">{user?.email || "—"}</p>
+            <div className="flex items-center gap-3 px-4 py-3">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Email</p>
+                <p className="text-sm font-medium truncate">{user?.email || "—"}</p>
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <Phone className="h-3 w-3" /> Phone
-              </Label>
-              {editing ? (
-                <Input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+27 82 123 4567"
-                  className="h-10 rounded-lg bg-secondary/50 border-border text-sm"
-                />
-              ) : (
-                <p className="text-sm font-medium">
-                  {profile?.phone || "Not set"}
-                </p>
-              )}
+            <div className="flex items-center gap-3 px-4 py-3">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Phone</p>
+                {editing ? (
+                  <Input
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+27 82 123 4567"
+                    className="h-8 mt-0.5 rounded-lg bg-secondary/50 border-border text-sm px-2"
+                  />
+                ) : (
+                  <p className="text-sm font-medium">{profile?.phone || "Not set"}</p>
+                )}
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Delivery Address */}
+        {/* Delivery & Payment */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-card rounded-lg border border-border p-4"
+          className="bg-card rounded-xl border border-border overflow-hidden"
         >
-          <h3 className="font-semibold tracking-wide text-sm uppercase mb-3">
-            Delivery Address
-          </h3>
-          <div className="flex items-start gap-3 text-sm">
-            <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-            <div className="flex-1">
-              {orders.length > 0 && orders[0].delivery_address ? (
-                <p className="font-medium">{orders[0].delivery_address}</p>
-              ) : (
-                <p className="text-muted-foreground">
-                  No saved address. Your delivery address will appear here after
-                  your first order.
-                </p>
-              )}
-            </div>
+          <div className="px-4 py-3 border-b border-border">
+            <h3 className="font-semibold tracking-wide text-xs uppercase text-muted-foreground">
+              Delivery & Payment
+            </h3>
           </div>
-        </motion.div>
 
-        {/* Payment / Banking */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-card rounded-lg border border-border p-4"
-        >
-          <h3 className="font-semibold tracking-wide text-sm uppercase mb-3">
-            Payment Methods
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
-              <CreditCard className="h-5 w-5 text-[#1A6FDB]" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">Cash on Delivery</p>
-                <p className="text-xs text-muted-foreground">Default method</p>
+          <div className="divide-y divide-border">
+            <div className="flex items-center gap-3 px-4 py-3.5">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Delivery Address</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {orders.length > 0 && orders[0].delivery_address
+                    ? orders[0].delivery_address
+                    : "No saved address"}
+                </p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+            </div>
+
+            <div className="flex items-center gap-3 px-4 py-3.5">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <Banknote className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Cash on Delivery</p>
+                <p className="text-xs text-muted-foreground">Default payment method</p>
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
                 Active
               </span>
             </div>
-            <button className="flex items-center gap-3 p-3 rounded-lg border border-dashed border-border w-full text-left hover:bg-secondary/30 transition-colors">
-              <CreditCard className="h-5 w-5 text-muted-foreground" />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Add Card or EFT
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Visa, Mastercard, or bank transfer
-                </p>
+
+            <button className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-secondary/30 transition-colors text-left">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Add Payment Method</p>
+                <p className="text-xs text-muted-foreground">Visa, Mastercard, or EFT</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             </button>
           </div>
         </motion.div>
@@ -324,61 +333,58 @@ export default function Profile() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="bg-card rounded-lg border border-border p-4"
+          transition={{ delay: 0.2 }}
+          className="bg-card rounded-xl border border-border overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold tracking-wide text-sm uppercase">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <h3 className="font-semibold tracking-wide text-xs uppercase text-muted-foreground">
               Recent Orders
             </h3>
             {totalOrders > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => navigate("/orders")}
-                className="h-8 text-xs text-[#1A6FDB] gap-1"
+                className="text-xs font-medium text-[#1A6FDB] flex items-center gap-0.5 hover:text-[#1560C0] transition-colors"
               >
                 View All <ChevronRight className="h-3 w-3" />
-              </Button>
+              </button>
             )}
           </div>
 
           {recentOrders.length === 0 ? (
-            <div className="text-center py-8">
-              <Package className="h-10 w-10 text-muted-foreground/30 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">No orders yet</p>
-              <Button
-                variant="ghost"
-                size="sm"
+            <div className="text-center py-10 px-4">
+              <Package className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
+              <p className="text-sm font-medium text-muted-foreground">No orders yet</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Your order history will appear here</p>
+              <button
                 onClick={() => navigate("/")}
-                className="mt-2 text-xs text-[#1A6FDB]"
+                className="mt-3 text-xs font-medium text-[#1A6FDB] hover:text-[#1560C0] transition-colors"
               >
-                Browse Restaurants
-              </Button>
+                Browse Restaurants →
+              </button>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="divide-y divide-border">
               {recentOrders.map((order) => (
                 <button
                   key={order.id}
                   onClick={() => navigate(`/order/${order.id}`)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-secondary/30 transition-colors text-left"
                 >
                   <div
                     className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
                       order.status === "delivered"
-                        ? "bg-green-500/10 text-green-500"
+                        ? "bg-emerald-500/10 text-emerald-500"
                         : order.status === "cancelled"
                         ? "bg-destructive/10 text-destructive"
                         : "bg-[#1A6FDB]/10 text-[#1A6FDB]"
                     }`}
                   >
                     {order.status === "delivered" ? (
-                      <CheckCircle2 className="h-4 w-4" />
+                      <CheckCircle2 className="h-3.5 w-3.5" />
                     ) : order.status === "cancelled" ? (
-                      <XCircle className="h-4 w-4" />
+                      <XCircle className="h-3.5 w-3.5" />
                     ) : (
-                      <Clock className="h-4 w-4" />
+                      <Clock className="h-3.5 w-3.5" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -400,7 +406,7 @@ export default function Profile() {
                     <p
                       className={`text-[10px] font-medium uppercase tracking-wider ${
                         order.status === "delivered"
-                          ? "text-green-500"
+                          ? "text-emerald-500"
                           : order.status === "cancelled"
                           ? "text-destructive"
                           : "text-[#1A6FDB]"
@@ -415,67 +421,67 @@ export default function Profile() {
           )}
         </motion.div>
 
-        {/* Returns & Support */}
+        {/* Help & Support */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-card rounded-lg border border-border p-4"
+          transition={{ delay: 0.25 }}
+          className="bg-card rounded-xl border border-border overflow-hidden"
         >
-          <h3 className="font-semibold tracking-wide text-sm uppercase mb-3">
-            Returns & Support
-          </h3>
-          <div className="space-y-1">
-            {cancelledOrders > 0 && (
-              <div className="flex items-center gap-3 p-3 rounded-lg">
-                <RotateCcw className="h-4 w-4 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Cancelled Orders</p>
-                  <p className="text-xs text-muted-foreground">
-                    {cancelledOrders} order{cancelledOrders > 1 ? "s" : ""}{" "}
-                    cancelled
-                  </p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            )}
+          <div className="px-4 py-3 border-b border-border">
+            <h3 className="font-semibold tracking-wide text-xs uppercase text-muted-foreground">
+              Help & Support
+            </h3>
+          </div>
+
+          <div className="divide-y divide-border">
             <button
               onClick={() =>
                 toast({
                   title: "Contact Support",
-                  description:
-                    "Email us at support@jozieats.co.za or call 011 555 0123",
+                  description: "Email us at support@jozieats.co.za or call 011 555 0123",
                 })
               }
-              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-secondary/30 transition-colors text-left"
             >
-              <Mail className="h-4 w-4 text-muted-foreground" />
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
               <div className="flex-1">
                 <p className="text-sm font-medium">Contact Support</p>
-                <p className="text-xs text-muted-foreground">
-                  Get help with an order or refund
-                </p>
+                <p className="text-xs text-muted-foreground">Get help with an order</p>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             </button>
+
             <button
               onClick={() =>
                 toast({
                   title: "Refund Policy",
-                  description:
-                    "Refunds are processed within 3-5 business days to your original payment method.",
+                  description: "Refunds are processed within 3-5 business days to your original payment method.",
                 })
               }
-              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/30 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-secondary/30 transition-colors text-left"
             >
-              <RotateCcw className="h-4 w-4 text-muted-foreground" />
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <FileText className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
               <div className="flex-1">
                 <p className="text-sm font-medium">Refund Policy</p>
-                <p className="text-xs text-muted-foreground">
-                  Learn about returns and refunds
-                </p>
+                <p className="text-xs text-muted-foreground">Returns and refund info</p>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+            </button>
+
+            <button className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-secondary/30 transition-colors text-left">
+              <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <Shield className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium">Privacy & Security</p>
+                <p className="text-xs text-muted-foreground">Manage your data preferences</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             </button>
           </div>
         </motion.div>
@@ -484,31 +490,35 @@ export default function Profile() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="bg-card rounded-lg border border-border p-4"
+          transition={{ delay: 0.3 }}
+          className="bg-card rounded-xl border border-border overflow-hidden"
         >
-          <h3 className="font-semibold tracking-wide text-sm uppercase mb-3">
-            Appearance
-          </h3>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { value: "light" as const, icon: Sun, label: "Light" },
-              { value: "dark" as const, icon: Moon, label: "Dark" },
-              { value: "system" as const, icon: Monitor, label: "System" },
-            ].map(({ value, icon: Icon, label }) => (
-              <button
-                key={value}
-                onClick={() => setTheme(value)}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-colors ${
-                  theme === value
-                    ? "border-[#1A6FDB] bg-[#1A6FDB]/10 text-[#1A6FDB]"
-                    : "border-border hover:bg-secondary/30 text-muted-foreground"
-                }`}
-              >
-                <Icon className="h-5 w-5" />
-                <span className="text-xs font-medium">{label}</span>
-              </button>
-            ))}
+          <div className="px-4 py-3 border-b border-border">
+            <h3 className="font-semibold tracking-wide text-xs uppercase text-muted-foreground">
+              Appearance
+            </h3>
+          </div>
+          <div className="p-4">
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: "light" as const, icon: Sun, label: "Light" },
+                { value: "dark" as const, icon: Moon, label: "Dark" },
+                { value: "system" as const, icon: Monitor, label: "System" },
+              ].map(({ value, icon: Icon, label }) => (
+                <button
+                  key={value}
+                  onClick={() => setTheme(value)}
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-all duration-200 ${
+                    theme === value
+                      ? "border-[#1A6FDB] bg-[#1A6FDB]/10 text-[#1A6FDB] shadow-sm"
+                      : "border-border hover:bg-secondary/30 text-muted-foreground"
+                  }`}
+                >
+                  <Icon className="h-4.5 w-4.5" />
+                  <span className="text-xs font-medium">{label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </motion.div>
 
@@ -516,22 +526,61 @@ export default function Profile() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.35 }}
+          className="pt-2"
         >
-          <Button
-            variant="outline"
-            onClick={handleSignOut}
-            className="w-full h-12 rounded-lg text-destructive border-destructive/30 hover:bg-destructive/5 font-semibold tracking-wide gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </Button>
+          {!showSignOutConfirm ? (
+            <button
+              onClick={() => setShowSignOutConfirm(true)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-card border border-border hover:bg-secondary/30 transition-colors text-left group"
+            >
+              <div className="h-8 w-8 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
+                <LogOut className="h-3.5 w-3.5 text-red-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-red-500">Sign Out</p>
+                <p className="text-xs text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          ) : (
+            <div className="rounded-xl bg-card border border-red-500/20 overflow-hidden">
+              <div className="px-4 py-4 text-center">
+                <div className="h-10 w-10 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-2">
+                  <LogOut className="h-4 w-4 text-red-500" />
+                </div>
+                <p className="text-sm font-semibold">Sign out of Jozi Eats?</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  You'll need to sign in again to place orders
+                </p>
+              </div>
+              <div className="grid grid-cols-2 border-t border-border">
+                <button
+                  onClick={() => setShowSignOutConfirm(false)}
+                  className="py-3 text-sm font-medium text-muted-foreground hover:bg-secondary/30 transition-colors border-r border-border"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  className="py-3 text-sm font-semibold text-red-500 hover:bg-red-500/5 transition-colors"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {/* App info */}
-        <p className="text-center text-[10px] text-muted-foreground/50 pb-4">
-          Jozi Eats v1.0.0 · Made in Johannesburg 🇿🇦
-        </p>
+        <div className="text-center pt-4 pb-8">
+          <img src="/logo.png" alt="Jozi Eats" className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <p className="text-[10px] text-muted-foreground/40">
+            Jozi Eats v1.0.0 · Made in Johannesburg 🇿🇦
+          </p>
+        </div>
       </div>
     </div>
   );
