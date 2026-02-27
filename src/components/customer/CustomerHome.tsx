@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, ShoppingBag, User, Home, Clock } from "lucide-react";
+import { Search, MapPin, ShoppingBag, User, Home, Clock, ChevronDown, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import RestaurantCard from "./RestaurantCard";
@@ -10,14 +10,30 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 const CATEGORIES = [
+  { emoji: "🍗", label: "PERi-PERi" },
+  { emoji: "🥩", label: "Steakhouse" },
   { emoji: "🍔", label: "Burgers" },
   { emoji: "🍕", label: "Pizza" },
-  { emoji: "🥗", label: "Healthy" },
   { emoji: "🍣", label: "Sushi" },
+  { emoji: "🐟", label: "Seafood" },
+  { emoji: "🍲", label: "Traditional" },
+  { emoji: "🌯", label: "Street Food" },
+  { emoji: "☕", label: "Café" },
   { emoji: "🌮", label: "Mexican" },
   { emoji: "🍜", label: "Asian" },
-  { emoji: "☕", label: "Café" },
-  { emoji: "🍰", label: "Dessert" },
+  { emoji: "🥗", label: "Healthy" },
+];
+
+const AREAS = [
+  "All Areas",
+  "Sandton",
+  "Bryanston",
+  "Randburg",
+  "Soweto",
+  "Rosebank",
+  "Melville",
+  "Fourways",
+  "Parkhurst",
 ];
 
 export default function CustomerHome() {
@@ -25,9 +41,11 @@ export default function CustomerHome() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedArea, setSelectedArea] = useState("All Areas");
+  const [showAreaPicker, setShowAreaPicker] = useState(false);
 
   const { data: restaurants = [], isLoading } = useQuery({
-    queryKey: ["restaurants", search, selectedCategory],
+    queryKey: ["restaurants", search, selectedCategory, selectedArea],
     queryFn: async () => {
       let query = supabase
         .from("restaurants")
@@ -36,10 +54,13 @@ export default function CustomerHome() {
         .order("rating", { ascending: false });
 
       if (search) {
-        query = query.or(`name.ilike.%${search}%,cuisine.ilike.%${search}%`);
+        query = query.or(`name.ilike.%${search}%,cuisine.ilike.%${search}%,address.ilike.%${search}%`);
       }
       if (selectedCategory) {
         query = query.ilike("cuisine", `%${selectedCategory}%`);
+      }
+      if (selectedArea && selectedArea !== "All Areas") {
+        query = query.ilike("address", `%${selectedArea}%`);
       }
 
       const { data, error } = await query;
@@ -59,9 +80,13 @@ export default function CustomerHome() {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Deliver to
             </p>
-            <button className="flex items-center gap-1 text-sm font-semibold text-foreground">
+            <button
+              onClick={() => setShowAreaPicker(!showAreaPicker)}
+              className="flex items-center gap-1 text-sm font-semibold text-foreground"
+            >
               <MapPin className="h-3.5 w-3.5 text-primary" />
-              Current Location
+              {selectedArea === "All Areas" ? "All of Jozi" : selectedArea}
+              <ChevronDown className="h-3 w-3 text-muted-foreground" />
             </button>
           </div>
           <Button
@@ -74,15 +99,50 @@ export default function CustomerHome() {
           </Button>
         </div>
 
+        {/* Area Picker Dropdown */}
+        {showAreaPicker && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="mb-3 flex flex-wrap gap-2"
+          >
+            {AREAS.map((area) => (
+              <button
+                key={area}
+                onClick={() => {
+                  setSelectedArea(area);
+                  setShowAreaPicker(false);
+                }}
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                  selectedArea === area
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                }`}
+              >
+                {area}
+              </button>
+            ))}
+          </motion.div>
+        )}
+
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search restaurants or cuisines..."
-            className="h-11 rounded-lg bg-secondary/80 border-0 pl-10 text-sm"
+            placeholder="Search restaurants, cuisines, or areas..."
+            className="h-11 rounded-lg bg-secondary/80 border-0 pl-10 pr-10 text-sm"
           />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -124,9 +184,37 @@ export default function CustomerHome() {
           ))}
         </div>
 
+        {/* Active Filters */}
+        {(selectedCategory || selectedArea !== "All Areas") && (
+          <div className="mb-4 flex items-center gap-2 flex-wrap">
+            {selectedArea !== "All Areas" && (
+              <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 text-primary text-xs font-medium px-2.5 py-1">
+                <MapPin className="h-3 w-3" />
+                {selectedArea}
+                <button onClick={() => setSelectedArea("All Areas")}>
+                  <X className="h-3 w-3 ml-0.5" />
+                </button>
+              </span>
+            )}
+            {selectedCategory && (
+              <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 text-primary text-xs font-medium px-2.5 py-1">
+                {selectedCategory}
+                <button onClick={() => setSelectedCategory(null)}>
+                  <X className="h-3 w-3 ml-0.5" />
+                </button>
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Restaurant List */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold tracking-wide">Nearby Restaurants</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold tracking-wide">
+              {selectedArea !== "All Areas" ? `Restaurants in ${selectedArea}` : "Nearby Restaurants"}
+            </h2>
+            <span className="text-xs text-muted-foreground">{restaurants.length} found</span>
+          </div>
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
@@ -142,6 +230,18 @@ export default function CustomerHome() {
               <p className="text-sm text-muted-foreground">
                 No restaurants found
               </p>
+              {(selectedCategory || selectedArea !== "All Areas" || search) && (
+                <button
+                  onClick={() => {
+                    setSearch("");
+                    setSelectedCategory(null);
+                    setSelectedArea("All Areas");
+                  }}
+                  className="mt-2 text-xs text-primary hover:underline"
+                >
+                  Clear all filters
+                </button>
+              )}
             </div>
           ) : (
             <motion.div

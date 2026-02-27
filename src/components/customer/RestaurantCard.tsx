@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star, Clock, Truck } from "lucide-react";
+import { Star, Clock, Truck, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -47,11 +47,22 @@ export default function RestaurantCard({ restaurant }: Props) {
         <h3 className="font-semibold text-base text-foreground leading-tight">
           {restaurant.name}
         </h3>
-        {restaurant.cuisine && (
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {restaurant.cuisine}
-          </p>
-        )}
+        <div className="flex items-center gap-2 mt-0.5">
+          {restaurant.cuisine && (
+            <p className="text-xs text-muted-foreground">
+              {restaurant.cuisine}
+            </p>
+          )}
+          {restaurant.cuisine && restaurant.address && (
+            <span className="text-xs text-muted-foreground/40">•</span>
+          )}
+          {restaurant.address && (
+            <p className="text-xs text-muted-foreground flex items-center gap-0.5">
+              <MapPin className="h-2.5 w-2.5" />
+              {restaurant.address.split(",").pop()?.trim() || restaurant.address}
+            </p>
+          )}
+        </div>
         <div className="mt-2.5 flex items-center gap-3 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
