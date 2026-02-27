@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Navigate } from "react-router-dom";
-import { Loader2, ClipboardList, UtensilsCrossed, BarChart3, Store, LogOut } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Loader2, ClipboardList, UtensilsCrossed, BarChart3, Store, LogOut, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RestaurantOrders from "@/components/restaurant/RestaurantOrders";
 import RestaurantMenuManager from "@/components/restaurant/RestaurantMenuManager";
@@ -21,6 +21,7 @@ type TabId = (typeof TABS)[number]["id"];
 
 export default function RestaurantDashboard() {
   const { user, hasRole, signOut, loading } = useAuth();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<TabId>("orders");
 
   const { data: restaurant, isLoading } = useQuery({
@@ -46,7 +47,11 @@ export default function RestaurantDashboard() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
         <Store className="h-12 w-12 text-muted-foreground/40 mb-3" />
-        <p className="text-muted-foreground text-sm">No restaurant found. Contact admin to set up your restaurant.</p>
+        <p className="text-lg font-semibold mb-1">No Restaurant Found</p>
+        <p className="text-muted-foreground text-sm mb-4">Contact admin to set up your restaurant profile.</p>
+        <Button variant="outline" className="rounded-lg" onClick={() => navigate("/")}>
+          <Home className="h-4 w-4 mr-2" />Back to Home
+        </Button>
       </div>
     );
   }
@@ -54,9 +59,17 @@ export default function RestaurantDashboard() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="sticky top-0 z-30 glass px-4 py-3 flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold">{restaurant.name}</h1>
-          <p className="text-xs text-muted-foreground">Restaurant Dashboard</p>
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => navigate("/")}>
+            <Home className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-lg font-bold tracking-wide">{restaurant.name}</h1>
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-muted-foreground font-light tracking-wide">Restaurant Dashboard</p>
+              <span className={`h-1.5 w-1.5 rounded-full ${restaurant.is_active ? "bg-green-500" : "bg-destructive"}`} />
+            </div>
+          </div>
         </div>
         <Button variant="ghost" size="icon" className="rounded-full" onClick={signOut}>
           <LogOut className="h-4 w-4" />
@@ -77,7 +90,7 @@ export default function RestaurantDashboard() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1 ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}
+              className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${tab === t.id ? "text-primary" : "text-muted-foreground"}`}
             >
               <t.icon className="h-5 w-5" />
               <span className="text-[10px] font-medium">{t.label}</span>

@@ -25,15 +25,19 @@ import {
   Edit2,
   Save,
   Loader2,
+  AlertTriangle,
   HelpCircle,
   Banknote,
+  Shield,
+  Store,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Profile() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, roles, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -154,6 +158,36 @@ export default function Profile() {
             </div>
           </div>
         </motion.div>
+
+        {/* Dashboard Access — only shows if user has any dashboard roles */}
+        {(roles.includes("admin") || roles.includes("restaurant_owner") || roles.includes("driver")) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.03 }}
+            className="bg-card rounded-xl border border-border overflow-hidden"
+          >
+            <div className="px-4 py-3 border-b border-border">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Dashboards
+              </h3>
+            </div>
+            <div className="divide-y divide-border">
+              {roles.includes("admin") && (
+                <MenuRow icon={Shield} title="Admin Panel" subtitle="Platform management" chevron
+                  onClick={() => navigate("/admin")} />
+              )}
+              {roles.includes("restaurant_owner") && (
+                <MenuRow icon={Store} title="Restaurant Dashboard" subtitle="Manage orders, menu & analytics" chevron
+                  onClick={() => navigate("/restaurant-dashboard")} />
+              )}
+              {roles.includes("driver") && (
+                <MenuRow icon={Truck} title="Driver Dashboard" subtitle="Deliveries & earnings" chevron
+                  onClick={() => navigate("/driver")} />
+              )}
+            </div>
+          </motion.div>
+        )}
 
         {/* Contact Details */}
         <motion.div
@@ -299,10 +333,12 @@ export default function Profile() {
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Support</h3>
           </div>
           <div className="divide-y divide-border">
+            <MenuRow icon={AlertTriangle} title="My Requests" subtitle="Track your refund requests" chevron
+              onClick={() => navigate("/my-requests")} />
             <MenuRow icon={HelpCircle} title="Help Centre" subtitle="FAQs and contact info" chevron
               onClick={() => toast({ title: "Contact Support", description: "Email support@jozieats.co.za or call 011 555 0123" })} />
             <MenuRow icon={RotateCcw} title="Refund Policy" subtitle="Returns and refund info" chevron
-              onClick={() => toast({ title: "Refund Policy", description: "Refunds are processed within 3-5 business days." })} />
+              onClick={() => navigate("/refund-policy")} />
           </div>
         </motion.div>
 
@@ -316,19 +352,19 @@ export default function Profile() {
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Appearance</h3>
           </div>
-          <div className="flex items-center justify-center gap-6 py-3">
+          <div className="flex items-center gap-4 px-4 py-3">
             {([
               { value: "light" as const, icon: Sun, label: "Light" },
               { value: "dark" as const, icon: Moon, label: "Dark" },
               { value: "system" as const, icon: Monitor, label: "System" },
             ]).map(({ value, icon: Icon, label }) => (
               <button key={value} onClick={() => setTheme(value)}
-                className={`flex flex-col items-center gap-1 transition-colors ${
+                className={`flex items-center gap-1.5 transition-colors ${
                   theme === value
                     ? "text-[#1A6FDB]"
                     : "text-muted-foreground hover:text-foreground"}`}>
-                <Icon className="h-5 w-5" />
-                <span className="text-[10px] font-medium">{label}</span>
+                <Icon className="h-4 w-4" />
+                <span className="text-xs font-medium">{label}</span>
               </button>
             ))}
           </div>
@@ -343,11 +379,9 @@ export default function Profile() {
           {!showSignOutConfirm ? (
             <button
               onClick={() => setShowSignOutConfirm(true)}
-              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-card border border-border hover:bg-secondary/30 transition-colors text-left"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-card border border-border hover:bg-secondary/30 transition-colors"
             >
-              <div className="h-8 w-8 rounded-full bg-[#1A6FDB]/10 flex items-center justify-center shrink-0">
-                <LogOut className="h-3.5 w-3.5 text-[#1A6FDB]" />
-              </div>
+              <LogOut className="h-4 w-4 text-[#1A6FDB] shrink-0" />
               <p className="text-sm font-medium text-[#1A6FDB]">Sign Out</p>
             </button>
           ) : (
@@ -386,9 +420,7 @@ function ProfileRow({ icon: Icon, label, children }: {
 }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3">
-      <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-      </div>
+      <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">{label}</p>
         {children}
@@ -404,9 +436,7 @@ function MenuRow({ icon: Icon, title, subtitle, badge, chevron, onClick }: {
   return (
     <Comp onClick={onClick}
       className={`w-full flex items-center gap-3 px-4 py-3.5 text-left ${onClick || chevron ? "hover:bg-secondary/30 transition-colors" : ""}`}>
-      <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-      </div>
+      <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium">{title}</p>
         <p className="text-xs text-muted-foreground truncate">{subtitle}</p>

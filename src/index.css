@@ -110,6 +110,11 @@
   }
 }
 
+/* Thin Lucide icons globally — outside @layer for full specificity */
+svg.lucide {
+  stroke-width: 0.92px !important;
+}
+
 @layer utilities {
   .glass {
     @apply bg-card/80 backdrop-blur-xl border border-border/50;

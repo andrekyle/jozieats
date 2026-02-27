@@ -16,6 +16,9 @@ import RestaurantDashboard from "./pages/RestaurantDashboard";
 import DriverDashboard from "./pages/DriverDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from "./pages/Profile";
+import RefundPolicy from "./pages/RefundPolicy";
+import ReportProblem from "./pages/ReportProblem";
+import MyRequests from "./pages/MyRequests";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +40,9 @@ const App = () => (
                 <Route path="/order/:id" element={<OrderTracking />} />
                 <Route path="/orders" element={<OrderHistory />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+                <Route path="/report-problem/:orderId" element={<ReportProblem />} />
+                <Route path="/my-requests" element={<MyRequests />} />
                 <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
                 <Route path="/driver" element={<DriverDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />

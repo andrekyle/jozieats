@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -62,6 +62,15 @@ export default function OrderHistory() {
                   {order.status.replace(/_/g, " ")}
                 </span>
               </div>
+              {(order.status === "delivered" || order.status === "cancelled") && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigate(`/report-problem/${order.id}`); }}
+                  className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <AlertTriangle className="h-3 w-3" />
+                  Report a Problem
+                </button>
+              )}
             </motion.button>
           ))
         )}

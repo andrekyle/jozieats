@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Minus, Plus } from "lucide-react";
@@ -29,7 +29,8 @@ export default function MenuItemModal({ item, onClose }: Props) {
 
   return (
     <Dialog open={!!item} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-sm mx-auto p-0 rounded-lg overflow-hidden">
+      <DialogContent className="max-w-sm mx-auto p-0 rounded-lg overflow-hidden" aria-describedby={undefined}>
+        <DialogTitle className="sr-only">{item.name}</DialogTitle>
         {item.image_url ? (
           <img src={item.image_url} alt={item.name} className="w-full h-44 object-cover" />
         ) : (

@@ -16,10 +16,10 @@ export default function Index() {
 
   if (!user) return <Navigate to="/auth" replace />;
 
-  // Role-based redirects
-  if (roles.includes("admin")) return <Navigate to="/admin" replace />;
-  if (roles.includes("restaurant_owner")) return <Navigate to="/restaurant-dashboard" replace />;
-  if (roles.includes("driver")) return <Navigate to="/driver" replace />;
+  // Role-based redirects — only if user has ONLY that role (no customer view)
+  if (roles.length === 1 && roles[0] === "admin") return <Navigate to="/admin" replace />;
+  if (roles.length === 1 && roles[0] === "restaurant_owner") return <Navigate to="/restaurant-dashboard" replace />;
+  if (roles.length === 1 && roles[0] === "driver") return <Navigate to="/driver" replace />;
 
   return <CustomerHome />;
 }

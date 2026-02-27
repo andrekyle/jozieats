@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
-import { ArrowLeft, CheckCircle2, Clock, ChefHat, Truck, Package } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, ChefHat, Truck, Package, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
@@ -99,6 +99,18 @@ export default function OrderTracking() {
           <div className="mt-6 pt-4 border-t border-border text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Total</span><span className="font-semibold">R{Number(order?.total_price || 0).toFixed(2)}</span></div>
             <div className="flex justify-between mt-1"><span className="text-muted-foreground">Delivery to</span><span className="text-right max-w-[60%]">{order?.delivery_address}</span></div>
+          </div>
+
+          {/* Report a Problem */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <Button
+              variant="outline"
+              className="w-full rounded-lg text-sm font-medium gap-2"
+              onClick={() => navigate(`/report-problem/${id}`)}
+            >
+              <AlertTriangle className="h-4 w-4" />
+              Report a Problem
+            </Button>
           </div>
         </div>
       </motion.div>
