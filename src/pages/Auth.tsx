@@ -65,7 +65,7 @@ export default function Auth() {
           <img
             src="/logo.png"
             alt="Jozi Eats"
-            className="mb-2 h-28 w-28 object-contain"
+            className="mb-2 h-56 w-56 object-contain"
           />
           <p className="mt-1 text-sm font-light tracking-wide text-muted-foreground">
             Delicious food, delivered fast
