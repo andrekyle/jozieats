@@ -132,7 +132,7 @@ export default function Auth() {
           <Button
             type="submit"
             disabled={submitting}
-            className="h-12 w-full rounded-lg text-base font-semibold tracking-wide shadow-md"
+            className="h-12 w-full rounded-lg bg-[#1A6FDB] hover:bg-[#1560C0] text-white text-base font-semibold tracking-wide shadow-md"
           >
             {submitting ? (
               <Loader2 className="h-5 w-5 animate-spin" />

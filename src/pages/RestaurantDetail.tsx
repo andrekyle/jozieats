@@ -55,7 +55,6 @@ export default function RestaurantDetail() {
         {restaurant?.cover_image_url && (
           <img src={restaurant.cover_image_url} alt={restaurant?.name} className="h-full w-full object-cover" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
         <Button
           variant="ghost"
           size="icon"

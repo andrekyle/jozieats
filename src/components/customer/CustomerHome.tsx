@@ -67,7 +67,7 @@ export default function CustomerHome() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={signOut}
+            onClick={() => navigate("/profile")}
             className="rounded-full h-10 w-10 bg-secondary"
           >
             <User className="h-4 w-4" />
@@ -168,7 +168,7 @@ export default function CustomerHome() {
             { icon: Search, label: "Browse", active: false, action: () => {} },
             { icon: ShoppingBag, label: "Orders", active: false, action: () => navigate("/orders") },
             { icon: Clock, label: "History", active: false, action: () => navigate("/orders") },
-            { icon: User, label: "Profile", active: false, action: signOut },
+            { icon: User, label: "Profile", active: false, action: () => navigate("/profile") },
           ].map((tab) => (
             <button
               key={tab.label}
