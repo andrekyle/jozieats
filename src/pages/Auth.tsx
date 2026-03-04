@@ -193,31 +193,28 @@ export default function Auth() {
           </button>
         </div>
 
-        {/* Legal links */}
+        {/* Legal links — real <a> tags so crawlers can detect them */}
         <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-          <button
-            type="button"
-            onClick={() => navigate("/privacy-policy")}
-            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          <a
+            href="/privacy-policy"
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors underline-offset-2 hover:underline"
           >
             Privacy Policy
-          </button>
+          </a>
           <span className="text-muted-foreground/30 text-[11px]">·</span>
-          <button
-            type="button"
-            onClick={() => navigate("/terms")}
-            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          <a
+            href="/terms"
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors underline-offset-2 hover:underline"
           >
             Terms of Service
-          </button>
+          </a>
           <span className="text-muted-foreground/30 text-[11px]">·</span>
-          <button
-            type="button"
-            onClick={() => navigate("/refund-policy")}
-            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          <a
+            href="/refund-policy"
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors underline-offset-2 hover:underline"
           >
             Refund Policy
-          </button>
+          </a>
         </div>
       </motion.div>
     </div>
