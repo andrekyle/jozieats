@@ -260,6 +260,30 @@ export default function CustomerHome() {
         </div>
       </div>
 
+      {/* Legal footer */}
+      <div className="flex items-center justify-center gap-4 pb-28 pt-4 flex-wrap px-4">
+        <button
+          onClick={() => navigate("/privacy-policy")}
+          className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+        >
+          Privacy Policy
+        </button>
+        <span className="text-muted-foreground/30 text-[11px]">·</span>
+        <button
+          onClick={() => navigate("/terms")}
+          className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+        >
+          Terms of Service
+        </button>
+        <span className="text-muted-foreground/30 text-[11px]">·</span>
+        <button
+          onClick={() => navigate("/refund-policy")}
+          className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+        >
+          Refund Policy
+        </button>
+      </div>
+
       {/* Bottom Tab Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-40 glass safe-bottom">
         <div className="flex items-center justify-around py-2">

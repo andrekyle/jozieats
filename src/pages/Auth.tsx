@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Auth() {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -189,6 +190,33 @@ export default function Auth() {
             {isSignUp
               ? "Already have an account? Sign in"
               : "Don't have an account? Sign up"}
+          </button>
+        </div>
+
+        {/* Legal links */}
+        <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
+          <button
+            type="button"
+            onClick={() => navigate("/privacy-policy")}
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            Privacy Policy
+          </button>
+          <span className="text-muted-foreground/30 text-[11px]">·</span>
+          <button
+            type="button"
+            onClick={() => navigate("/terms")}
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            Terms of Service
+          </button>
+          <span className="text-muted-foreground/30 text-[11px]">·</span>
+          <button
+            type="button"
+            onClick={() => navigate("/refund-policy")}
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            Refund Policy
           </button>
         </div>
       </motion.div>
