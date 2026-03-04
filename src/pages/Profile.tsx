@@ -340,6 +340,8 @@ export default function Profile() {
               onClick={() => toast({ title: "Contact Support", description: "Email support@jozieats.co.za or call 011 555 0123" })} />
             <MenuRow icon={RotateCcw} title="Refund Policy" subtitle="Returns and refund info" chevron
               onClick={() => navigate("/refund-policy")} />
+            <MenuRow icon={Shield} title="Privacy Policy" subtitle="How we handle your data" chevron
+              onClick={() => navigate("/privacy-policy")} />
             <MenuRow icon={Info} title="About Jozi Eats" subtitle="What this app can do" chevron
               onClick={() => navigate("/about")} />
           </div>

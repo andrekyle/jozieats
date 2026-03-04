@@ -20,6 +20,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 import ReportProblem from "./pages/ReportProblem";
 import MyRequests from "./pages/MyRequests";
 import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="/report-problem/:orderId" element={<ReportProblem />} />
                 <Route path="/my-requests" element={<MyRequests />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/restaurant-dashboard" element={<RestaurantDashboard />} />
                 <Route path="/driver" element={<DriverDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
