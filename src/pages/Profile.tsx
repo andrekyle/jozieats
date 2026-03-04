@@ -32,6 +32,7 @@ import {
   Store,
   Truck,
   Info,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -342,6 +343,8 @@ export default function Profile() {
               onClick={() => navigate("/refund-policy")} />
             <MenuRow icon={Shield} title="Privacy Policy" subtitle="How we handle your data" chevron
               onClick={() => navigate("/privacy-policy")} />
+            <MenuRow icon={FileText} title="Terms of Service" subtitle="Rules and conditions of use" chevron
+              onClick={() => navigate("/terms")} />
             <MenuRow icon={Info} title="About Jozi Eats" subtitle="What this app can do" chevron
               onClick={() => navigate("/about")} />
           </div>
